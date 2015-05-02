@@ -39,7 +39,7 @@
       "value": "dscExtension"
     },
     "modulesUrl": {
-      "value": "https://onedrive.live.com/redir?resid=419c4c7214bb3869!21431&authkey=!AB4J-5fD0xZtjbo&ithint=file%2czip"
+      "value": "https://github.com/chandraneel/ArmTemplate/raw/master/IaaSExpJenkinsMaster.zip"
     },
     "configurationFunction": {
       "value": "IaaSExpJenkinsMaster.ps1\\IaaSExpJenkins"
