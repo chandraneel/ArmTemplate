@@ -1,0 +1,7 @@
+{
+  "itemDisplayName": "IIS Server using DSC extension on a Windows VM and prepares it for a jenkins master",
+  "description": "IIS Server using DSC extension on a Windows VM and prepares it for a jenkins master",
+  "summary": "IIS Server using DSC extension on a Windows VM and prepares it for a jenkins master",
+  "githubUsername": "chanchak",
+  "dateUpdated": "2015-05-01"
+}

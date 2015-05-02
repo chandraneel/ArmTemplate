@@ -1,0 +1,48 @@
+{
+  "$schema": "http://schema.management.azure.com/schemas/2014-04-01-preview/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "newStorageAccountName": {
+      "value": "iaasExpJenkins"
+    },
+    "location": {
+      "value": "westus"
+    },
+    "dnsName": {
+      "value": "iaasexp-ci"
+    },
+    "publicIPAddressName": {
+      "value": "iaasexp-ip"
+    },
+    "publicIPAddressType": {
+      "value": "Dynamic"
+    },
+    "vmName": {
+      "value": "iaasExpJenkinsTest"
+    },
+    "vmSize": {
+      "value": "Standard_D2"
+    },
+    "adminUserName": {
+      "value": "iaasexp"
+    },
+    "adminPassword": {
+      "value": "i44sexp!!"
+    },
+    "virtualNetworkName": {
+      "value": "iaasExpJenkinsVNet"
+    },
+    "nicName": {
+      "value": "iaasExpJenkinsNIC"
+    },
+    "vmExtensionName": {
+      "value": "dscExtension"
+    },
+    "modulesUrl": {
+      "value": "https://onedrive.live.com/redir?resid=419c4c7214bb3869!21431&authkey=!AB4J-5fD0xZtjbo&ithint=file%2czip"
+    },
+    "configurationFunction": {
+      "value": "IaaSExpJenkinsMaster.ps1\\IaaSExpJenkins"
+    }
+  }
+}
