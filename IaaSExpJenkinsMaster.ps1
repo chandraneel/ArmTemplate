@@ -38,7 +38,7 @@ Configuration IaaSExpJenkins
 	Import-DscResource -Module xWebAdministration 
 
 	# Stop the default website 
-	xWebsite DefaultSite  
+	MSFT_xWebsite DefaultSite  
 	{  
 		Ensure          = "Present"  
 		Name            = "Default Web Site"  
@@ -55,7 +55,7 @@ Configuration IaaSExpJenkins
 		UserAuthentication = 'Secure'
 	}
 
-	xFirewall AllowRDP
+	MSFT_xFirewall AllowRDP
 	{
 		Name = 'DSC - Remote Desktop Admin Connections'
 		DisplayGroup = "Remote Desktop"
@@ -66,7 +66,7 @@ Configuration IaaSExpJenkins
 	}
 
 	# Add Port 80, 443 and 8080 (Jenkins website) and Port 49175 (Jenkins JNLP - for Java WebStart)
-	xFirewall Firewall
+	MSFT_xFirewall Firewall
 	{
 		Name                  = "JenkinsIaaSRule"
 		DisplayName           = "Firewall Rules for Jenkins"
@@ -101,19 +101,19 @@ Configuration IaaSExpJenkins
 	} 
 
 	#Download and install Reverse proxy
-	xRemoteFile Downloader
+	MSFT_xRemoteFile Downloader
 	{
 		Uri = "https://github.com/azure/iisnode/releases/download/v0.2.11/iisnode-full-v0.2.11-x64.msi" 
 		DestinationPath = "$env:SystemDrive\Windows\DtlDownloads\iisnode-full-v0.2.11-x64.msi"
 	}
 
-	Package Installer
+	MSFT_xPackageResource Installer
 	{
 		Ensure = "Present"
 		Path = "$env:SystemDrive\Windows\DtlDownloads\iisnode-full-v0.2.11-x64.msi"
 		Name = "iisnode for iis 7.x (x64) full"
 		ProductId = 'E6141C88-1E55-4453-B0F0-72AF015AEF92'
-		DependsOn = "[xRemoteFile]Downloader"
+		DependsOn = "[MSFT_xRemoteFile]Downloader"
 	}
 
 	Script InstallCustomApps
