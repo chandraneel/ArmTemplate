@@ -1,6 +1,6 @@
 Configuration IaaSExpJenkins
 {
-    Import-DscResource -module PSDesiredStateConfiguration, xWebAdministration,xRemoteDesktopAdmin, xNetworking, xSystemSecurity
+    Import-DscResource -module xWebAdministration,xRemoteDesktopAdmin, xNetworking, xSystemSecurity
 	#Install the IIS Role
 	WindowsOptionalFeature IIS
 	{
