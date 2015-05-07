@@ -95,18 +95,57 @@ Configuration IaaSExpJenkins
 		TestScript = {
 			Test-Path "$env:ProgramFiles(x86)\Jenkins\jenkins.exe"
 			Test-Path "$env:ProgramFiles\Java"
-			Test-Path "$env:ProgramFiles(x86)\Atlassian\SourceTree\SourceTree.exe"
 		}
 		SetScript ={
-		  #install chocolatey
-		  iex ((new-object net.webclient).DownloadString('https://chocolatey.org/install.ps1'))
-          choco install -y jre8
-		  choco install -y java.jdk
-		  choco install -y urlrewrite
-		  choco install -y sourcetree
-		  choco install -y jenkins
-          choco install -y googlechrome
+            #install chocolatey
+		    iex ((new-object net.webclient).DownloadString('https://chocolatey.org/install.ps1'))
+            choco install -y jre8
+		    choco install -y java.jdk
+            choco install -y jenkins
+		    choco install -y urlrewrite
+		    choco install -y sourcetree
+            choco install -y googlechrome
+		}		
+	}
+    
+    Script InstallJenkinsPlugins
+	{
+	  GetScript = {
+			@{
+				Result = ""
+			}
 		}
-		
+		TestScript = {
+			Test-Path "$env:ProgramFiles(x86)\Jenkins\plugins\ws-cleanup.hpi"
+		}
+		SetScript ={
+            net stop jenkins
+            Write-Output "Downloading jenkins plugins"
+            $prgmsPath = ${env:ProgramFiles(x86)}
+            $jenkinsPath = [System.IO.Path]::Combine($prgmsPath, "Jenkins\plugins\") 
+	        $jenkinsPlugins = get-content "C:\Program Files\WindowsPowerShell\Modules\xWebAdministration\jenkinsPlugins.txt" 
+			$clnt = New-Object System.Net.WebClient
+
+            foreach($url in $jenkinsPlugins) 
+            { 
+	            #Get the filename 
+	            $filename = [System.IO.Path]::GetFileName($url) 
+ 
+	            #Create the output path 
+	            $file = [System.IO.Path]::Combine($jenkinsPath, $filename) 
+ 
+	            Write-Host -NoNewline "Getting ""$url""... "
+ 
+	            #Download the file using the WebClient
+                try { 
+	                $clnt.DownloadFile($url, $file)
+                } catch {
+                    Write-Host $_.Exception.InnerException            
+                }
+
+                net start jenkins
+	            Write-Host "done." 
+            }
+		}		
 	}
 } 
