@@ -1,53 +1,50 @@
 Configuration IaaSExpJenkins
 {
+    Import-DscResource -module PSDesiredStateConfiguration, xWebAdministration,xRemoteDesktopAdmin, xNetworking, xSystemSecurity
 	#Install the IIS Role
-	WindowsFeature IIS
+	WindowsOptionalFeature IIS
 	{
-	  Ensure = “Present”
+	  Ensure = “Enable”
 	  Name = “Web-Server”
 	}
 
 	#Install .NET 3.5
-	WindowsFeature NET-Framework-Core
+	WindowsOptionalFeature NET-Framework-Core
 	{
-	  Ensure = “Present”
+	  Ensure = “Enable”
 	  Name = “NET-Framework-Core”
 	}
 
 	#Install .NET 4.5
-	WindowsFeature NET-Framework-45-Core
+	WindowsOptionalFeature NET-Framework-45-Core
 	{
-	  Ensure = “Present”
+	  Ensure = “Enable”
 	  Name = “NET-Framework-45-Core”
 	}
 
 	#Install .NET 4.5
-	WindowsFeature NET-Framework-45-ASPNET
+	WindowsOptionalFeature NET-Framework-45-ASPNET
 	{
-	  Ensure = “Present”
+	  Ensure = “Enable”
 	  Name = “NET-Framework-45-ASPNET”
 	}
 
 	#Install Web server ASP.NET 4.5 Application Development ASP.NET 4.5
-	WindowsFeature ASP
+	WindowsOptionalFeature ASP
 	{
-	  Ensure = “Present”
+	  Ensure = “Enable”
 	  Name = “Web-Asp-Net45”
 	}
 
-	Import-DscResource -Module xWebAdministration 
-
 	# Stop the default website 
-	MSFT_xWebsite DefaultSite  
+	xWebsite DefaultSite  
 	{  
 		Ensure          = "Present"  
 		Name            = "Default Web Site"  
 		State           = "Stopped"  
 		PhysicalPath    = "C:\inetpub\wwwroot"  
-		DependsOn       = "[WindowsFeature]IIS"  
+		DependsOn       = "[WindowsOptionalFeature]IIS"  
 	}
-
-	Import-DscResource -Module xRemoteDesktopAdmin, xNetworking
 
 	xRemoteDesktopAdmin RemoteDesktopSettings
 	{
@@ -55,7 +52,7 @@ Configuration IaaSExpJenkins
 		UserAuthentication = 'Secure'
 	}
 
-	MSFT_xFirewall AllowRDP
+	xFirewall AllowRDP
 	{
 		Name = 'DSC - Remote Desktop Admin Connections'
 		DisplayGroup = "Remote Desktop"
@@ -66,7 +63,7 @@ Configuration IaaSExpJenkins
 	}
 
 	# Add Port 80, 443 and 8080 (Jenkins website) and Port 49175 (Jenkins JNLP - for Java WebStart)
-	MSFT_xFirewall Firewall
+	xFirewall Firewall
 	{
 		Name                  = "JenkinsIaaSRule"
 		DisplayName           = "Firewall Rules for Jenkins"
@@ -81,40 +78,12 @@ Configuration IaaSExpJenkins
 		Description           = "Firewall Rules for Jenkins"  
 	}
 
-
-	Import-DSCResource -Module xSystemSecurity -Name xIEEsc 
-
 	# Disable IE Enhanced Security 
 	xIEEsc DisableIEEsc 
 	{ 
 		IsEnabled = $false 
 		UserRole = "Administrators" 
 	} 
-
-	#Install Chrome
-	Import-DscResource -module xChrome 
-	Import-DscResource -module xPSDesiredStateConfiguration
-
-	MSFT_xChrome chrome 
-	{ 
-		
-	} 
-
-	#Download and install Reverse proxy
-	MSFT_xRemoteFile Downloader
-	{
-		Uri = "https://github.com/azure/iisnode/releases/download/v0.2.11/iisnode-full-v0.2.11-x64.msi" 
-		DestinationPath = "$env:SystemDrive\Windows\DtlDownloads\iisnode-full-v0.2.11-x64.msi"
-	}
-
-	MSFT_xPackageResource Installer
-	{
-		Ensure = "Present"
-		Path = "$env:SystemDrive\Windows\DtlDownloads\iisnode-full-v0.2.11-x64.msi"
-		Name = "iisnode for iis 7.x (x64) full"
-		ProductId = 'E6141C88-1E55-4453-B0F0-72AF015AEF92'
-		DependsOn = "[MSFT_xRemoteFile]Downloader"
-	}
 
 	Script InstallCustomApps
 	{
@@ -131,10 +100,12 @@ Configuration IaaSExpJenkins
 		SetScript ={
 		  #install chocolatey
 		  iex ((new-object net.webclient).DownloadString('https://chocolatey.org/install.ps1'))
+          choco install -y jre8
 		  choco install -y java.jdk
 		  choco install -y urlrewrite
 		  choco install -y sourcetree
 		  choco install -y jenkins
+          choco install -y googlechrome
 		}
 		
 	}
